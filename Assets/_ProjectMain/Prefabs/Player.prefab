@@ -128,6 +128,7 @@ GameObject:
   - component: {fileID: 396253344290048093}
   - component: {fileID: 7686766653508578656}
   - component: {fileID: 7651640176788237069}
+  - component: {fileID: 3539227556050924963}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -253,3 +254,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
   anim: {fileID: 3713778045088555060}
+--- !u!114 &3539227556050924963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5685794656196398710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 350d45aad07f35b40931e272ae714749, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
+  interactAction: {fileID: 1781555164194001046, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  interactionLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  interactionRadius: 1.8
