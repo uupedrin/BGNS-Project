@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 251ed615f39edc14987d25f9dc2000e5, type: 3}
   m_Name: Makarov
   m_EditorClassIdentifier: Assembly-CSharp::WeaponSO
+  itemId: makarov
   itemName: Makarov
   itemDescription: A simple pistol for a simple man!
   itemSprite: {fileID: 21300000, guid: 1865e356b254ad44f90199195cc9448d, type: 3}

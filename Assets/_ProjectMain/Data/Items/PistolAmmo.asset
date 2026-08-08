@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5a042c1f940beb4bbf64af3ad69abed, type: 3}
   m_Name: PistolAmmo
   m_EditorClassIdentifier: Assembly-CSharp::ItemSO
+  itemId: pistol_ammo
   itemName: 9mm Rounds
   itemDescription: Used to load pistols
   itemSprite: {fileID: 21300000, guid: bf439b505215fe34c9998fd97ac54d90, type: 3}
   itemType: 1
   stackable: 1
-  itemsOnStackAmount: 16
+  itemsOnStackAmount: 24

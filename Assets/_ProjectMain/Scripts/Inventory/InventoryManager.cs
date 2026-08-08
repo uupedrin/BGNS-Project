@@ -24,6 +24,7 @@ public class InventoryManager : MonoSingleton<InventoryManager>
     {
         ObjectPoolManager.CreatePool(inventoryItemPrefab, inventorySlots.Length / 2);
         ChangeSelectedSlot(0);
+        SaveManager.ApplyPendingLoad();
     }
 
     public ItemSO GetSelectedItem()
@@ -141,6 +142,54 @@ public class InventoryManager : MonoSingleton<InventoryManager>
         newItem.Count = amount;
 
         return newItem;
+    }
+
+    public InventoryData CaptureState()
+    {
+        InventoryData data = new();
+        for (int i = 0; i < inventorySlots.Length; i++)
+        {
+            InventoryItem itemInSlot = inventorySlots[i].GetComponentInChildren<InventoryItem>();
+            if (itemInSlot == null) continue;
+
+            data.slots.Add(new InventorySlotData
+            {
+                slotIndex = i,
+                itemId = itemInSlot.item.itemId,
+                count = itemInSlot.Count,
+                currentAmmoInClip = itemInSlot.instance.currentAmmoInClip
+            });
+        }
+        return data;
+    }
+
+    public void RestoreState(InventoryData data)
+    {
+        ClearInventory();
+        foreach (InventorySlotData slotData in data.slots)
+        {
+            ItemSO item = ItemDatabase.Instance.GetItemById(slotData.itemId);
+            if (item == null) continue;
+
+            InventoryItem newItem = AddItem(item, inventorySlots[slotData.slotIndex], slotData.count);
+            newItem.instance.currentAmmoInClip = slotData.currentAmmoInClip;
+
+            inventoryCache.TryGetValue(item, out int current);
+            inventoryCache[item] = current + slotData.count;
+        }
+    }
+
+    private void ClearInventory()
+    {
+        for (int i = 0; i < inventorySlots.Length; i++)
+        {
+            InventoryItem itemInSlot = inventorySlots[i].GetComponentInChildren<InventoryItem>();
+            if(itemInSlot != null)
+            {
+                ObjectPoolManager.Return(itemInSlot.gameObject);
+            }
+        }
+        inventoryCache.Clear();
     }
 
     #region UI Control

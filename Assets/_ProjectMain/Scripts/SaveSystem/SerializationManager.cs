@@ -5,16 +5,19 @@ using Newtonsoft.Json;
 public class SerializationManager
 {
     private const bool USE_CRYPTOGRAPHY = false;
-    public static bool Save<T>(string saveName, T saveData)
+
+    private static string GetSavePath(string saveName)
     {
         string saveDataDirectory = Path.Combine(Application.persistentDataPath, "saves");
-
-        if(!Directory.Exists(saveDataDirectory))
+        if (!Directory.Exists(saveDataDirectory))
         {
             Directory.CreateDirectory(saveDataDirectory);
         }
-
-        string path = Path.Combine(saveDataDirectory, $"{saveName}.sav");
+        return Path.Combine(saveDataDirectory, $"{saveName}.sav");
+    }
+    public static bool Save<T>(string saveName, T saveData)
+    {
+        string path = GetSavePath(saveName);
 
         string json = JsonConvert.SerializeObject(saveData, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore});
 
@@ -24,10 +27,9 @@ public class SerializationManager
         return true;
     }
 
-    public static T Load<T>(string saveName, string path = null)
+    public static T Load<T>(string saveName)
     {
-        path ??= Path.Combine(Application.persistentDataPath, "saves");
-        path = Path.Combine(path, $"{saveName}.sav");
+        string path = GetSavePath(saveName);
         if (!File.Exists(path))
         {
             return default;
@@ -38,5 +40,18 @@ public class SerializationManager
         T save = JsonConvert.DeserializeObject<T>(data);
         
         return save;
+    }
+
+    public static bool Exists(string saveName)
+    {
+        return File.Exists(GetSavePath(saveName));
+    }
+
+    public static bool Delete(string saveName)
+    {
+        string path = GetSavePath(saveName);
+        bool exists = File.Exists(path);
+        if (exists) File.Delete(path);
+        return exists;
     }
 }

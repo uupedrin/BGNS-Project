@@ -52,6 +52,7 @@ public class MainMenuController : MonoBehaviour
     {
         SkyLoop();
         ShowMenuItems();
+        loadGameButton.gameObject.SetActive(SaveManager.HasSave());
     }
 
     #region Animation
@@ -79,12 +80,16 @@ public class MainMenuController : MonoBehaviour
     #region ButtonBehaviour
     private void OnNewGameClick()
     {
+        SaveData.current = new SaveData();
+        SaveManager.pendingLoad = false;
         SceneHandler.Instance.LoadScene(Scenes.Game);
     }
 
     private void OnLoadGameClick()
     {
-
+        SaveManager.LoadGame();
+        SaveManager.pendingLoad = true;
+        SceneHandler.Instance.LoadScene(Scenes.Game);
     }
 
     private void OnOptionsClick()
