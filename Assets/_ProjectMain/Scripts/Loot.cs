@@ -17,6 +17,7 @@ public class Loot : MonoBehaviour
     [SerializeField] private float itemCollectionCooldown = 1f;
 
     [SerializeField] private ItemSO item;
+    [SerializeField] private int itemAmount = 1;
 
     private void Start()
     {
@@ -58,7 +59,11 @@ public class Loot : MonoBehaviour
             await UniTask.Yield();
         }
 
-        bool collected = InventoryManager.Instance.AddItem(item);
+        int collectedAmount = InventoryManager.Instance.AddItem(item, itemAmount);
+
+        itemAmount -= collectedAmount;
+
+        bool collected = itemAmount <= 0;
         if (collected)
         {
             //ObjectPoolManager.Return(gameObject);

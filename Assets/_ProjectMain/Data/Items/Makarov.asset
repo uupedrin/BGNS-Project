@@ -20,5 +20,6 @@ MonoBehaviour:
   itemsOnStackAmount: 1
   damage: 10
   fireRate: 0.5
+  weaponAnimator: {fileID: 9100000, guid: a3989fe98513d7147b7e477a24b70fe4, type: 2}
   ammoType: {fileID: 11400000, guid: e0f9f9ccb5de4f846ab118a3f66fcbc8, type: 2}
   clipSize: 8
