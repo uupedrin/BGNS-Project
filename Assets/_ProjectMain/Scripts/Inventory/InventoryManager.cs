@@ -37,6 +37,44 @@ public class InventoryManager : MonoSingleton<InventoryManager>
         return null;
     }
 
+    public int GetItemCount(ItemSO item) => inventoryCache.TryGetValue(item, out int count) ? count : 0;
+    public int ConsumeItem(ItemSO item, int amount)
+    {
+        int remaining = amount;
+        for (int i = 0; i < inventorySlots.Length && remaining > 0; i++)
+        {
+            InventoryItem itemInSlot = inventorySlots[i].GetComponentInChildren<InventoryItem>();
+            if (itemInSlot == null || itemInSlot.item != item) continue;
+
+            int taken = Mathf.Min(remaining, itemInSlot.Count);
+            itemInSlot.Count -= taken;
+            remaining -= taken;
+
+            if(itemInSlot.Count <= 0)
+            {
+                ObjectPoolManager.Return(itemInSlot.gameObject);
+            }
+        }
+
+        int consumed = amount - remaining;
+        if (inventoryCache.ContainsKey(item))
+        {
+            inventoryCache[item] -= consumed;
+            if (inventoryCache[item] <= 0) inventoryCache.Remove(item);
+        }
+        return consumed;
+    }
+
+    public ItemInstance GetSelectedInstance()
+    {
+        InventorySlot slot = inventorySlots[selectedSlotId];
+        InventoryItem itemInSlot = slot.GetComponentInChildren<InventoryItem>();
+        if(itemInSlot != null)
+        {
+            return itemInSlot.instance;
+        }
+        return null;
+    }
     public void HandleSlotNavigation(int nextSlotPos)
     {
         int newValue = selectedSlotId + nextSlotPos;
@@ -44,6 +82,8 @@ public class InventoryManager : MonoSingleton<InventoryManager>
         else if (newValue >= AMOUNT_OF_SLOTS_POCKET) newValue = 0;
         ChangeSelectedSlot(newValue);
     }
+
+    public void SelectSlot(int slotId) => ChangeSelectedSlot(slotId);
 
     private void ChangeSelectedSlot(int slotId)
     {
@@ -53,50 +93,52 @@ public class InventoryManager : MonoSingleton<InventoryManager>
         selectedSlotId = slotId;
     }
 
-    public bool AddItem(ItemSO item)
+    public bool AddItem(ItemSO item) => AddItem(item, 1) > 0;
+    public int AddItem(ItemSO item, int amount)
     {
-        InventorySlot currentSlot = null;
-        for (int i = 0; i < inventorySlots.Length; i++)
+        int remaining = amount;
+        if (item.stackable)
         {
-            currentSlot = inventorySlots[i];
-            InventoryItem itemInSlot = currentSlot.GetComponentInChildren<InventoryItem>();
-            if (itemInSlot != null && itemInSlot.item == item && item.stackable && itemInSlot.Count < itemInSlot.maxStackSize)
+            for (int i = 0; i < inventorySlots.Length && remaining > 0; i++)
             {
-                itemInSlot.Count++;
-                if (inventoryCache.ContainsKey(item))
-                {
-                    inventoryCache[item] = itemInSlot.Count;
-                }
-                return true;
+                InventoryItem itemInSlot = inventorySlots[i].GetComponentInChildren<InventoryItem>();
+                if (itemInSlot == null || itemInSlot.item != item) continue;
+
+                int spaceInStack = itemInSlot.maxStackSize - itemInSlot.Count;
+                if (spaceInStack <= 0) continue;
+
+                int toAdd = Mathf.Min(spaceInStack, remaining);
+                itemInSlot.Count += toAdd;
+                remaining -= toAdd;
             }
         }
 
-        for (int i = 0; i < inventorySlots.Length; i++)
+        for (int i = 0; i < inventorySlots.Length && remaining > 0; i++)
         {
-            currentSlot = inventorySlots[i];
-            InventoryItem itemInSlot = currentSlot.GetComponentInChildren<InventoryItem>();
-            if(itemInSlot == null)
-            {
-                InventoryItem newItem = AddItem(item, currentSlot);
-                if (inventoryCache.ContainsKey(item))
-                {
-                    inventoryCache[item] = newItem.Count;
-                }
-                else
-                {
-                    inventoryCache.Add(item, newItem.Count);
-                }
-                return true;
-            }
+            InventoryItem itemInSlot = inventorySlots[i].GetComponentInChildren<InventoryItem>();
+            if (itemInSlot != null) continue;
+
+            int stackSize = item.stackable ? Mathf.Min(item.itemsOnStackAmount, remaining) : 1;
+            InventoryItem newItem = AddItem(item, inventorySlots[i], stackSize);
+            remaining -= stackSize;
         }
-        return false;
+
+        int added = amount - remaining;
+        if (added > 0)
+        {
+            inventoryCache.TryGetValue(item, out int current);
+            inventoryCache[item] = current + added;
+        }
+
+        return added;
     }
 
-    private InventoryItem AddItem(ItemSO item, InventorySlot slot)
+    private InventoryItem AddItem(ItemSO item, InventorySlot slot, int amount = 1)
     {
         GameObject newItemGO = ObjectPoolManager.Get(inventoryItemPrefab, slot.transform);
         InventoryItem newItem = newItemGO.GetComponent<InventoryItem>();
-        newItem.SetItemData(item);
+        newItem.SetItemData(new ItemInstance(item));
+        newItem.Count = amount;
 
         return newItem;
     }

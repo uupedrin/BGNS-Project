@@ -7,11 +7,14 @@ public class WeaponSO : ItemSO
     public int damage = 10;
     public float fireRate = 0.5f;
 
+    public RuntimeAnimatorController weaponAnimator;
+
     public ItemSO ammoType;
     public int clipSize = 1;
 
     public WeaponSO()
     {
         itemType = ItemType.Weapon;
+        stackable = false;
     }
 }

@@ -7,10 +7,16 @@ public class PlayerInventory : MonoBehaviour
     PlayerEvents playerEvents;
 
     [SerializeField] private InputActionReference openInventoryAction;
+
     [SerializeField] private InputActionReference nextInventoryItemAction;
+    [SerializeField] private InputActionReference selectInventorySlotAction;
+
     [SerializeField] private InputActionReference useSelectedItemAction;
 
-    private ItemSO currentHeldItem;
+    private ItemInstance currentHeldItem;
+    private ItemInstance lastHeldItem = null;
+
+    private bool hasDoneInitialSelection = false;
 
     private void Awake()
     {
@@ -75,9 +81,13 @@ public class PlayerInventory : MonoBehaviour
 
     private void HandleSelectedItem()
     {
-        currentHeldItem = InventoryManager.Instance.GetSelectedItem();
-        bool isWeapon = currentHeldItem != null && currentHeldItem is WeaponSO;
+        currentHeldItem = InventoryManager.Instance.GetSelectedInstance();
+        if (hasDoneInitialSelection && currentHeldItem == lastHeldItem) return;
 
-        playerEvents.OnPlayerSelectWeapon?.Invoke(isWeapon, null);
+        hasDoneInitialSelection = true;
+        lastHeldItem = currentHeldItem;
+        bool isWeapon = currentHeldItem != null && currentHeldItem.itemData is WeaponSO;
+
+        playerEvents.OnPlayerSelectWeapon?.Invoke(isWeapon, isWeapon ? currentHeldItem : null);
     }
 }

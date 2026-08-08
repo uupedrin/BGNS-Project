@@ -7,7 +7,8 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Image))]
 public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    public ItemSO item { get; private set; }
+    public ItemInstance instance { get; private set; }
+    public ItemSO item => instance.itemData;
 
     private Image itemImage;
     [SerializeField] private TMP_Text itemCountTxt;
@@ -30,10 +31,9 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         itemImage.preserveAspect = true;
     }
 
-    public void SetItemData(ItemSO newItemData)
+    public void SetItemData(ItemInstance newInstance)
     {
-        item = newItemData;
-
+        instance = newInstance;
         itemImage.sprite = item.itemSprite;
         maxStackSize = item.itemsOnStackAmount;
         RefreshCountText();
