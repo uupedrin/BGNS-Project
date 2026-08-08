@@ -32,6 +32,9 @@ public class PlayerInventory : MonoBehaviour
         useSelectedItemAction.action.performed += OnUseSelectedItemKeyPress;
 
         nextInventoryItemAction?.action.Enable();
+
+        selectInventorySlotAction?.action.Enable();
+        selectInventorySlotAction.action.performed += OnSelectSlotPressed;
     }
 
     private void OnDisable()
@@ -39,10 +42,13 @@ public class PlayerInventory : MonoBehaviour
         openInventoryAction?.action.Disable();
         openInventoryAction.action.performed -= OnInventoryKeyPress;
 
-        nextInventoryItemAction?.action.Disable();
-
         useSelectedItemAction?.action.Disable();
         useSelectedItemAction.action.performed -= OnUseSelectedItemKeyPress;
+
+        nextInventoryItemAction?.action.Disable();
+
+        selectInventorySlotAction?.action.Disable();
+        selectInventorySlotAction.action.performed -= OnSelectSlotPressed;
     }
 
     private void Update()
@@ -77,6 +83,16 @@ public class PlayerInventory : MonoBehaviour
         int nextSlotPos = (int)nextInventoryItemAction.action.ReadValue<float>();
         if (nextSlotPos == 0) return;
         InventoryManager.Instance.HandleSlotNavigation(nextSlotPos);
+    }
+
+    private void OnSelectSlotPressed(InputAction.CallbackContext context)
+    {
+        if (InventoryManager.Instance == null) return;
+
+        if(int.TryParse(context.control.name, out int slotNumber))
+        {
+            InventoryManager.Instance.SelectSlot(slotNumber - 1);
+        }
     }
 
     private void HandleSelectedItem()

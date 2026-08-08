@@ -25,6 +25,9 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public int maxStackSize { get; private set; } = 1;
 
     [HideInInspector] public Transform parentAfterDrag;
+    private bool wasDragged = false;
+    private bool consumed = false;
+
     private void Awake()
     {
         itemImage = GetComponent<Image>();
@@ -45,8 +48,16 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         itemCountTxt.gameObject.SetActive(count > 1);
     }
 
+    public void ReturnToPool()
+    {
+        consumed = true;
+        ObjectPoolManager.Return(gameObject);
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (!InventoryManager.Instance.isInventoryOpen) return;
+        wasDragged = true;
         itemImage.raycastTarget = false;
         parentAfterDrag = transform.parent;
         transform.SetParent(transform.root);
@@ -54,12 +65,22 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (!InventoryManager.Instance.isInventoryOpen) return;
         transform.position = Mouse.current.position.ReadValue();
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (!wasDragged) return;
+        wasDragged = false;
         itemImage.raycastTarget = true;
+
+        if (consumed)
+        {
+            consumed = false;
+            return;
+        }
+
         transform.SetParent(parentAfterDrag);
     }
 }

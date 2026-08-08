@@ -1288,6 +1288,10 @@ PrefabInstance:
       propertyPath: item
       value: 
       objectReference: {fileID: 11400000, guid: 3516e4391c7fad743835c5e160ed0b8b, type: 2}
+    - target: {fileID: 1813272602715076553, guid: 7cc83faf49416814d98c10e5df6c61b7, type: 3}
+      propertyPath: itemAmount
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8271352244217764186, guid: 7cc83faf49416814d98c10e5df6c61b7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.3931217
@@ -19606,6 +19610,10 @@ PrefabInstance:
       propertyPath: item
       value: 
       objectReference: {fileID: 11400000, guid: e0f9f9ccb5de4f846ab118a3f66fcbc8, type: 2}
+    - target: {fileID: 1813272602715076553, guid: 7cc83faf49416814d98c10e5df6c61b7, type: 3}
+      propertyPath: itemAmount
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 8271352244217764186, guid: 7cc83faf49416814d98c10e5df6c61b7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.393122
@@ -20392,7 +20400,7 @@ TilemapRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 4
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -21203,6 +21211,10 @@ PrefabInstance:
       propertyPath: item
       value: 
       objectReference: {fileID: 11400000, guid: e0f9f9ccb5de4f846ab118a3f66fcbc8, type: 2}
+    - target: {fileID: 1813272602715076553, guid: 7cc83faf49416814d98c10e5df6c61b7, type: 3}
+      propertyPath: itemAmount
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 8271352244217764186, guid: 7cc83faf49416814d98c10e5df6c61b7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.3931217
@@ -21451,7 +21463,7 @@ TilemapRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 3
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
