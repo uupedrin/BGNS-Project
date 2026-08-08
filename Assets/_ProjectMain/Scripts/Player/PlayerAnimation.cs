@@ -19,6 +19,7 @@ public class PlayerAnimation : MonoBehaviour
     private void OnEnable()
     {
         playerEvents.OnPlayerMove += SetMovementAnimation;
+        playerEvents.OnPlayerSelectWeapon += SetHoldingWeapon;
     }
 
     private void OnDisable()
@@ -31,5 +32,10 @@ public class PlayerAnimation : MonoBehaviour
         anim.SetBool("isMoving", isMoving);
         anim.SetFloat("X_Input", moveDirection.x);
         anim.SetFloat("Y_Input", moveDirection.y);
+    }
+
+    private void SetHoldingWeapon(bool hasWeapon, WeaponSO _)
+    {
+        anim.SetBool("hasWeapon", hasWeapon);
     }
 }

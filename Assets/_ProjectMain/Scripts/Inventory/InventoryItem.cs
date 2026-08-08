@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Image))]
 public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    private ItemSO item;
+    public ItemSO item { get; private set; }
 
     private Image itemImage;
     [SerializeField] private TMP_Text itemCountTxt;

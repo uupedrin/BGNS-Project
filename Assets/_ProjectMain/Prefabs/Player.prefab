@@ -286,3 +286,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
   openInventoryAction: {fileID: 2057813734169780081, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   nextInventoryItemAction: {fileID: 3945118946344545986, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  useSelectedItemAction: {fileID: 2072951669522949836, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

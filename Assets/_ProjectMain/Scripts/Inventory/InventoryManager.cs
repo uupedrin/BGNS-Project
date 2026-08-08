@@ -15,7 +15,7 @@ public class InventoryManager : MonoSingleton<InventoryManager>
 
     int selectedSlotId = -1;
 
-    private void Awake()
+    protected override void AwakeBehaviour()
     {
         inventoryCache = new();
     }
@@ -24,6 +24,17 @@ public class InventoryManager : MonoSingleton<InventoryManager>
     {
         ObjectPoolManager.CreatePool(inventoryItemPrefab, inventorySlots.Length / 2);
         ChangeSelectedSlot(0);
+    }
+
+    public ItemSO GetSelectedItem()
+    {
+        InventorySlot slot = inventorySlots[selectedSlotId];
+        InventoryItem itemInSlot = slot.GetComponentInChildren<InventoryItem>();
+        if(itemInSlot != null)
+        {
+            return itemInSlot.item;
+        }
+        return null;
     }
 
     public void HandleSlotNavigation(int nextSlotPos)
@@ -49,7 +60,7 @@ public class InventoryManager : MonoSingleton<InventoryManager>
         {
             currentSlot = inventorySlots[i];
             InventoryItem itemInSlot = currentSlot.GetComponentInChildren<InventoryItem>();
-            if (itemInSlot != null && itemInSlot == item && item.stackable && itemInSlot.Count <= itemInSlot.maxStackSize)
+            if (itemInSlot != null && itemInSlot.item == item && item.stackable && itemInSlot.Count < itemInSlot.maxStackSize)
             {
                 itemInSlot.Count++;
                 if (inventoryCache.ContainsKey(item))
@@ -66,14 +77,14 @@ public class InventoryManager : MonoSingleton<InventoryManager>
             InventoryItem itemInSlot = currentSlot.GetComponentInChildren<InventoryItem>();
             if(itemInSlot == null)
             {
-                AddItem(item, currentSlot);
+                InventoryItem newItem = AddItem(item, currentSlot);
                 if (inventoryCache.ContainsKey(item))
                 {
-                    inventoryCache[item] = itemInSlot.Count;
+                    inventoryCache[item] = newItem.Count;
                 }
                 else
                 {
-                    inventoryCache.Add(item, itemInSlot.Count);
+                    inventoryCache.Add(item, newItem.Count);
                 }
                 return true;
             }
@@ -81,11 +92,13 @@ public class InventoryManager : MonoSingleton<InventoryManager>
         return false;
     }
 
-    private void AddItem(ItemSO item, InventorySlot slot)
+    private InventoryItem AddItem(ItemSO item, InventorySlot slot)
     {
         GameObject newItemGO = ObjectPoolManager.Get(inventoryItemPrefab, slot.transform);
         InventoryItem newItem = newItemGO.GetComponent<InventoryItem>();
         newItem.SetItemData(item);
+
+        return newItem;
     }
 
     #region UI Control
