@@ -7,13 +7,13 @@ public class MainMenuController : MonoBehaviour
 {
     #region References
     [Header("Buttons")]
-    [SerializeField] private RectTransform buttonsContainer;
     [SerializeField] private Button newGameButton;
     [SerializeField] private Button loadGameButton;
     [SerializeField] private Button optionsButton;
     [SerializeField] private Button quitButton;
 
     [Header("UI Components")]
+    [SerializeField] private RectTransform buttonsContainer;
     [SerializeField]private Image skyLayer;
     [SerializeField] private Image gameLogo;
 

@@ -32,14 +32,22 @@ public partial class PlayerMovement : MonoBehaviour
         movementAction.action?.Disable();
     }
 
-    void FixedUpdate()
+    private void Update()
+    {
+        HandleInput();
+    }
+    private void FixedUpdate()
     {
         HandleMovement();
     }
 
-    private void HandleMovement()
+    private void HandleInput()
     {
         _inputDirection = movementAction.action.ReadValue<Vector2>();
+    }
+
+    private void HandleMovement()
+    {
         isMoving = _inputDirection != Vector2.zero;
 
         Vector2 animDirection = _lastDirection;
