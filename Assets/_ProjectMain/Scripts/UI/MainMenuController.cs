@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using Cysharp.Threading.Tasks;
+using TMPro;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private RectTransform buttonsContainer;
     [SerializeField]private Image skyLayer;
     [SerializeField] private Image gameLogo;
+    [SerializeField] private TMP_Text savedDayText;
 
     [Header("Animation")]
     [SerializeField] private float skyLoopAnimationDuration = 10f;
@@ -52,7 +54,14 @@ public class MainMenuController : MonoBehaviour
     {
         SkyLoop();
         ShowMenuItems();
-        loadGameButton.gameObject.SetActive(SaveManager.HasSave());
+
+        bool hasSave = SaveManager.HasSave();
+        loadGameButton.gameObject.SetActive(hasSave);
+        if (hasSave)
+        {
+            SaveManager.LoadGame();
+            savedDayText.text = $"Day {SaveData.current.dayData.currentDay}";
+        }
     }
 
     #region Animation

@@ -24934,6 +24934,57 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &2086597108
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2086597110}
+  - component: {fileID: 2086597109}
+  m_Layer: 0
+  m_Name: '[Script] DayNightManager'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2086597109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2086597108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e45416eabd23fcf45b526aba846ad4c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DayNightManager
+  isDontDestroyOnLoad: 0
+  dayDuration: 10
+  nightDuration: 10
+  globalLight: {fileID: 619394801}
+  dayColor: {r: 1, g: 1, b: 1, a: 1}
+  nightColor: {r: 0.4303284, g: 0.36009255, b: 0.6415094, a: 1}
+  lightTransitionDuration: 3
+--- !u!4 &2086597110
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2086597108}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.06713, y: 4.31918, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2129794916
 GameObject:
   m_ObjectHideFlags: 0
@@ -25604,6 +25655,8 @@ SceneRoots:
   - {fileID: 766161791}
   - {fileID: 1906458807}
   - {fileID: 5473724732601953955}
+  - {fileID: 6458322249768292775}
+  - {fileID: 8503069881612158062}
   - {fileID: 1405504487}
   - {fileID: 1190935010}
   - {fileID: 559014643}
@@ -25613,5 +25666,4 @@ SceneRoots:
   - {fileID: 670420713}
   - {fileID: 1074386129}
   - {fileID: 1798627024}
-  - {fileID: 6458322249768292775}
-  - {fileID: 8503069881612158062}
+  - {fileID: 2086597110}

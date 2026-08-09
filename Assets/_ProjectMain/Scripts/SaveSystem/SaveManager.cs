@@ -12,6 +12,9 @@ public class SaveManager : MonoBehaviour
     {
         if(InventoryManager.Instance != null)
             SaveData.current.inventoryData = InventoryManager.Instance.CaptureState();
+        if (DayNightManager.Instance != null)
+            SaveData.current.dayData.currentDay = DayNightManager.Instance.CurrentDay;
+
         SerializationManager.Save(SAVE_NAME, SaveData.current);
     }
 
@@ -26,7 +29,6 @@ public class SaveManager : MonoBehaviour
     {
         if (!pendingLoad || InventoryManager.Instance == null) return;
         InventoryManager.Instance.RestoreState(SaveData.current.inventoryData);
-        pendingLoad = false;
     }
 
     public static void DeleteSave()
