@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using System.Threading;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -15,6 +16,7 @@ public class Zombie : MonoBehaviour, IDamageable
     private float currentSpeed;
     private bool isKnockedBack = false;
     private bool isHitting = false;
+    private bool isDead = false;
 
     [SerializeField] private float fadeDuration = 0.5f;
 
@@ -24,10 +26,15 @@ public class Zombie : MonoBehaviour, IDamageable
     private float lastFacingX = 1f;
     private Color originalColor;
 
+    private CancellationToken destroyToken;
+
+    public static event System.Action OnZombieRemoved;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         originalColor = spriteRenderer.color;
+        destroyToken = this.GetCancellationTokenOnDestroy();
     }
 
     private void OnEnable()
@@ -40,6 +47,7 @@ public class Zombie : MonoBehaviour, IDamageable
         enemyCollider.enabled = true;
         spriteRenderer.color = originalColor;
         isHitting = false;
+        isDead = false;
 
         targetPoint = HouseHealth.Instance.GetNearestAttackPoint(transform.position);
     }
@@ -65,10 +73,13 @@ public class Zombie : MonoBehaviour, IDamageable
 
     public void TakeDamage(int amount, Vector2 hitDirection)
     {
+        if (isDead) return;
+
         currentHealth -= amount;
         FlashWhite().Forget();
         if (currentHealth <= 0)
         {
+            isDead = true;
             Die();
             return;
         }
@@ -90,6 +101,8 @@ public class Zombie : MonoBehaviour, IDamageable
         anim.SetFloat("DeathVariant", Random.Range(0, 2));
         anim.SetTrigger("Death");
 
+        OnZombieRemoved?.Invoke();
+
         PlayDeathAndReturn().Forget();
     }
 
@@ -97,27 +110,27 @@ public class Zombie : MonoBehaviour, IDamageable
     {
         isKnockedBack = true;
         rb.linearVelocity = direction * data.knockbackForce;
-        await UniTask.WaitForSeconds(data.knockbackDuration);
+        await UniTask.WaitForSeconds(data.knockbackDuration, cancellationToken: destroyToken);
         isKnockedBack = false;
     }
 
     private async UniTask FlashWhite()
     {
         spriteRenderer.material.SetFloat("_FlashAmount", 1f);
-        await UniTask.WaitForSeconds(0.1f);
+        await UniTask.WaitForSeconds(0.1f, cancellationToken: destroyToken);
         spriteRenderer.material.DOFloat(0f, "_FlashAmount", 0.15f);
     }
 
     private async UniTask ApplySlow()
     {
         currentSpeed = data.moveSpeed * data.slowMultiplier;
-        await UniTask.WaitForSeconds(data.slowDuration);
+        await UniTask.WaitForSeconds(data.slowDuration, cancellationToken: destroyToken);
         currentSpeed = data.moveSpeed;
     }
 
     private async UniTask PlayDeathAndReturn()
     {
-        await UniTask.WaitForSeconds(deathAnimDuration);
+        await UniTask.WaitForSeconds(deathAnimDuration, cancellationToken: destroyToken);
         spriteRenderer.DOFade(0f, fadeDuration).OnComplete(() => ObjectPoolManager.Return(gameObject));
     }
 
@@ -130,6 +143,7 @@ public class Zombie : MonoBehaviour, IDamageable
         house.TakeDamage(data.damageToHouse, Vector2.zero);
         isKnockedBack = true;
         rb.linearVelocity = Vector2.zero;
+        OnZombieRemoved?.Invoke();
         spriteRenderer.DOFade(0f, fadeDuration).OnComplete(() => ObjectPoolManager.Return(gameObject));
     }
 

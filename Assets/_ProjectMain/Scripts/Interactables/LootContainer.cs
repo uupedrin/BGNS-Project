@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using Cysharp.Threading.Tasks;
+using System.Threading;
 
 public class LootContainer : MonoBehaviour, IInteractable
 {
@@ -18,16 +19,25 @@ public class LootContainer : MonoBehaviour, IInteractable
     private bool hasBeenLooted = false;
 
     Collider2D col;
+    private Color originalColor;
+
+    private CancellationTokenSource disappearCts;
 
     private void Awake()
     {
         col = GetComponent<Collider2D>();
+        originalColor = containerRenderer.color;
     }
 
     private void OnEnable()
     {
         hasBeenLooted = false;
         outlineSprite.SetActive(false);
+        col.enabled = true;
+        containerRenderer.color = originalColor;
+
+        disappearCts?.Cancel();
+        disappearCts = new CancellationTokenSource();
     }
 
     public void Interact(GameObject interactor)
@@ -38,7 +48,7 @@ public class LootContainer : MonoBehaviour, IInteractable
         transform.DOShakePosition(shakeDuration, shakeStrength);
         col.enabled = false;
         DropLoot();
-        DisappearAfterDelay().Forget();
+        DisappearAfterDelay(disappearCts.Token).Forget();
     }
 
     public void Highlight(bool active) => outlineSprite.SetActive(active);
@@ -53,11 +63,22 @@ public class LootContainer : MonoBehaviour, IInteractable
         lootGO.GetComponent<Loot>().SetItemData(loot.item, amount);
     }
 
-    private async UniTask DisappearAfterDelay()
+    private async UniTask DisappearAfterDelay(CancellationToken token)
     {
-        await UniTask.WaitForSeconds(disappearDelay);
+        await UniTask.WaitForSeconds(disappearDelay, cancellationToken: token);
         containerRenderer.DOFade(0f, fadeDuration).SetEase(Ease.InOutQuad).OnComplete(() => {
             ObjectPoolManager.Return(gameObject);
         });
     }
+
+    public void ForceDespawn()
+    {
+        if (hasBeenLooted) return;
+        hasBeenLooted = true;
+        outlineSprite.SetActive(false);
+        col.enabled = false;
+        DisappearAfterDelay(disappearCts.Token).Forget();
+    }
+
+    public void CancelDisappear() => disappearCts?.Cancel();
 }

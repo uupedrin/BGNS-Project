@@ -82,4 +82,10 @@ public class DayNightManager : MonoSingleton<DayNightManager>
 
         OnNightStart?.Invoke(CurrentDay);
     }
+
+    public void EndNightEarly()
+    {
+        if (CurrentPhase != DayPhase.Night) return;
+        PhaseTimeRemaining = 0f;
+    }
 }

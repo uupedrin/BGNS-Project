@@ -9,7 +9,7 @@ public class PauseUI : MonoBehaviour
     [SerializeField] private Button mainMenuButton;
     [SerializeField] private Button resumeButton;
 
-    private bool isPaused = false;
+    public static bool IsPaused { get; private set; } = false;
 
     private void Awake()
     {
@@ -36,21 +36,21 @@ public class PauseUI : MonoBehaviour
     {
         if (pauseAction.action.WasPressedThisFrame())
         {
-            if (isPaused) Resume();
+            if (IsPaused) Resume();
             else Pause();
         }
     }
 
     private void Pause()
     {
-        isPaused = true;
+        IsPaused = true;
         pausePanel.SetActive(true);
         Time.timeScale = 0f;
     }
 
     private void Resume()
     {
-        isPaused = false;
+        IsPaused = false;
         pausePanel.SetActive(false);
         Time.timeScale = 1f;
     }
@@ -58,6 +58,7 @@ public class PauseUI : MonoBehaviour
 
     private void OnMainMenuClick()
     {
+        IsPaused = false;
         Time.timeScale = 1f;
         SceneHandler.Instance.LoadScene(Scenes.MainMenu);
     }

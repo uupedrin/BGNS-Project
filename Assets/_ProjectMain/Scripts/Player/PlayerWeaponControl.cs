@@ -77,7 +77,7 @@ public class PlayerWeaponControl : MonoBehaviour
 
     private void OnAttackHeld()
     {
-        if (InventoryManager.Instance.isInventoryOpen || weaponInstance == null || isReloading || Time.time < nextFireTime) return;
+        if (PauseUI.IsPaused || InventoryManager.Instance.isInventoryOpen || weaponInstance == null || isReloading || Time.time < nextFireTime) return;
         if (weaponInstance.currentAmmoInClip <= 0) return; //click sound
 
         weaponInstance.currentAmmoInClip--;
@@ -96,7 +96,7 @@ public class PlayerWeaponControl : MonoBehaviour
 
     private void OnReloadPressed(InputAction.CallbackContext context)
     {
-        if (weaponInstance == null || isReloading) return;
+        if (PauseUI.IsPaused || weaponInstance == null || isReloading) return;
 
         int needed = weaponData.clipSize - weaponInstance.currentAmmoInClip;
         if (needed <= 0) return;
