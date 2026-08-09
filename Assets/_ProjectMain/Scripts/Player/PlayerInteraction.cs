@@ -38,11 +38,15 @@ public class PlayerInteraction : MonoBehaviour
             float distance = Vector2.Distance(transform.position, interactables[i].transform.position);
             if(distance < minDistance)
             {
-                closestInteractable = interactables[i].GetComponent<IInteractable>();
+                IInteractable current = interactables[i].GetComponent<IInteractable>();
+                if (current == null || !current.ValidForInteraction()) continue;
+                closestInteractable = current;
                 minDistance = distance;
             }
         }
+        if(closestInteractable != currentInteractable) currentInteractable?.Highlight(false);
         currentInteractable = closestInteractable;
+        currentInteractable?.Highlight(true);
     }
 
     private void OnInteractPressed()

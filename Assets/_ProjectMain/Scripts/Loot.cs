@@ -33,6 +33,11 @@ public class Loot : MonoBehaviour
         isCollecting = false;
     }
 
+    public void SetItemData(ItemSO item, int amount)
+    {
+        itemAmount = amount;
+        SetItemData(item);
+    }
     public void SetItemData(ItemSO item)
     {
         this.item = item;
