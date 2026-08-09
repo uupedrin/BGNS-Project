@@ -10,6 +10,7 @@ public class WeaponSO : ItemSO
     public RuntimeAnimatorController weaponAnimator;
 
     public ItemSO ammoType;
+    public GameObject projectilePrefab;
     public int clipSize = 1;
 
     public WeaponSO()

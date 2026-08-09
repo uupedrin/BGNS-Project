@@ -53,6 +53,11 @@ public class PlayerWeaponControl : MonoBehaviour
         weaponAnimEvents.OnReloadComplete -= HandleReloadComplete;
     }
 
+    private void Update()
+    {
+        if (attackAction.action.IsPressed()) OnAttackHeld();
+    }
+
     private void OnWeaponChanged(bool hasWeapon, ItemInstance instance)
     {
         isReloading = false;
@@ -71,6 +76,7 @@ public class PlayerWeaponControl : MonoBehaviour
         weaponAnim.SetTrigger("Shoot");
         EndShootAnim(weaponData.fireRate).Forget();
         //Spawn projectile
+        SpawnProjectile();
     }
 
     private async UniTask EndShootAnim(float delay)
@@ -107,10 +113,11 @@ public class PlayerWeaponControl : MonoBehaviour
         if (!isReloading) return;
         isReloading = false;
     }
-
-    private void Update()
+    
+    private void SpawnProjectile()
     {
-        if (weaponInstance == null) return;
-        Debug.Log(weaponInstance.currentAmmoInClip);
+        GameObject projectileGO = ObjectPoolManager.Get(weaponData.projectilePrefab, weaponAim.FirePoint.position, Quaternion.identity);
+        Projectile projectile = projectileGO.GetComponent<Projectile>();
+        projectile.Setup(weaponAim.AimDirection, weaponData.damage);
     }
 }

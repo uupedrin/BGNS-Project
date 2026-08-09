@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(PlayerEvents))]
 public class PlayerWeaponAim : MonoBehaviour
@@ -9,12 +10,19 @@ public class PlayerWeaponAim : MonoBehaviour
     [SerializeField] private InputActionReference aimAction;
 
     [SerializeField] private Transform weaponHolderObject;
+    
 
     [SerializeField] private float weaponOffsetRadius = 0.5f;
 
     private Camera cam;
 
+    [SerializeField] [FormerlySerializedAs("firePoint")] private Transform firePointVertical;
+    [SerializeField] private Transform firePointHorizontal;
+    public Transform FirePoint => currentSnappedDir.y != 0 ? firePointVertical : firePointHorizontal;
+    public Vector2 AimDirection { get; private set; }
+
     private bool isHoldingWeapon = false;
+    private Vector2 currentSnappedDir;
 
     private void Awake()
     {
@@ -52,12 +60,15 @@ public class PlayerWeaponAim : MonoBehaviour
         Vector3 mouseWorldPos = cam.ScreenToWorldPoint(new Vector3(mouseScreenPos.x, mouseScreenPos.y, -cam.transform.position.z));
         Vector2 aimDir = ((Vector2)mouseWorldPos - (Vector2)weaponHolderObject.position).normalized;
 
+        AimDirection = aimDir;
+
         weaponHolderObject.localPosition = aimDir * -weaponOffsetRadius;
 
         Vector2 snappedDir;
         if (Mathf.Abs(aimDir.y) > Mathf.Abs(aimDir.x)) snappedDir = Vector2.up * Mathf.Sign(aimDir.y);
         else snappedDir = Vector2.right * Mathf.Sign(aimDir.x);
 
+        currentSnappedDir = snappedDir;
         playerEvents.OnPlayerAim?.Invoke(snappedDir);
 
         float realAngle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
