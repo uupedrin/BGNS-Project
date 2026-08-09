@@ -5,7 +5,9 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Image))]
-public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class InventoryItem : MonoBehaviour,
+    IBeginDragHandler, IDragHandler, IEndDragHandler,
+    IPointerEnterHandler, IPointerExitHandler
 {
     public ItemInstance instance { get; private set; }
     public ItemSO item => instance.itemData;
@@ -58,6 +60,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         if (!InventoryManager.Instance.isInventoryOpen) return;
         wasDragged = true;
+        InventoryManager.Instance.ClearItemDetails();
         itemImage.raycastTarget = false;
         parentAfterDrag = transform.parent;
         transform.SetParent(transform.root);
@@ -82,5 +85,16 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
 
         transform.SetParent(parentAfterDrag);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (!InventoryManager.Instance.isInventoryOpen) return;
+        InventoryManager.Instance.ShowItemDetails(item);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        InventoryManager.Instance.ClearItemDetails();
     }
 }

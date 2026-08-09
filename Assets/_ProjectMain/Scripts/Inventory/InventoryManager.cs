@@ -11,6 +11,11 @@ public class InventoryManager : MonoSingleton<InventoryManager>
     private const int AMOUNT_OF_SLOTS_POCKET = 4;
 
     [SerializeField] private GameObject inventoryContainer;
+
+    [SerializeField] private ItemDetailPanel itemDetailPanel;
+    public void ShowItemDetails(ItemSO item) => itemDetailPanel.Show(item);
+    public void ClearItemDetails() => itemDetailPanel.Clear();
+
     public bool isInventoryOpen { get; private set; } = false;
 
     int selectedSlotId = -1;
@@ -23,6 +28,7 @@ public class InventoryManager : MonoSingleton<InventoryManager>
     private void Start()
     {
         ObjectPoolManager.CreatePool(inventoryItemPrefab, inventorySlots.Length / 2);
+        SetInventoryVisibility(false);
         ChangeSelectedSlot(0);
         SaveManager.ApplyPendingLoad();
     }
