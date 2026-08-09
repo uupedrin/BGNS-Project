@@ -14,10 +14,12 @@ public class Zombie : MonoBehaviour, IDamageable
     private int currentHealth;
     private float currentSpeed;
     private bool isKnockedBack = false;
+    private bool isHitting = false;
 
     [SerializeField] private float fadeDuration = 0.5f;
 
     [SerializeField] private float deathAnimDuration = 1f;
+    [SerializeField] private Collider2D enemyCollider;
     [SerializeField] private Collider2D enemyHitTrigger;
     private float lastFacingX = 1f;
     private Color originalColor;
@@ -35,7 +37,9 @@ public class Zombie : MonoBehaviour, IDamageable
         isKnockedBack = false;
         spriteRenderer.material.SetFloat("_FlashAmount", 0f);
         enemyHitTrigger.enabled = true;
+        enemyCollider.enabled = true;
         spriteRenderer.color = originalColor;
+        isHitting = false;
 
         targetPoint = HouseHealth.Instance.GetNearestAttackPoint(transform.position);
     }
@@ -78,9 +82,11 @@ public class Zombie : MonoBehaviour, IDamageable
         isKnockedBack = true;
         rb.linearVelocity = Vector2.zero;
         enemyHitTrigger.enabled = false;
+        enemyCollider.enabled = false;
+
+        TryDropLoot();
 
         anim.SetFloat("X", Mathf.Sign(lastFacingX));
-
         anim.SetFloat("DeathVariant", Random.Range(0, 2));
         anim.SetTrigger("Death");
 
@@ -115,14 +121,26 @@ public class Zombie : MonoBehaviour, IDamageable
         spriteRenderer.DOFade(0f, fadeDuration).OnComplete(() => ObjectPoolManager.Return(gameObject));
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        if (!collision.TryGetComponent(out HouseHealth house)) return;
+        if (isHitting || isKnockedBack || !collision.TryGetComponent(out HouseHealth house)) return;
+
+        isHitting = true;
 
         house.TakeDamage(data.damageToHouse, Vector2.zero);
         isKnockedBack = true;
         rb.linearVelocity = Vector2.zero;
         spriteRenderer.DOFade(0f, fadeDuration).OnComplete(() => ObjectPoolManager.Return(gameObject));
-        
+    }
+
+    private void TryDropLoot()
+    {
+        if (data.lootTable == null || Random.value > data.dropChance) return;
+
+        LootTableSO.LootEntry loot = data.lootTable.RollLoot();
+        int amount = Random.Range(loot.minAmount, loot.maxAmount + 1);
+
+        GameObject lootGO = ObjectPoolManager.Get(data.lootPrefab, transform.position, Quaternion.identity);
+        lootGO.GetComponent<Loot>().SetItemData(loot.item, amount);
     }
 }

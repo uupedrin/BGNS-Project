@@ -194,6 +194,7 @@ MonoBehaviour:
   anim: {fileID: 1277006468261753661}
   fadeDuration: 0.5
   deathAnimDuration: 1
+  enemyCollider: {fileID: 2710142361736531729}
   enemyHitTrigger: {fileID: 2826367767041613320}
 --- !u!58 &2710142361736531729
 CircleCollider2D:

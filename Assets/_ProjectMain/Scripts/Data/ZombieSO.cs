@@ -11,4 +11,8 @@ public class ZombieSO : ScriptableObject
     public float knockbackDuration = 0.2f;
     public float slowMultiplier = 0.5f;
     public float slowDuration = 1f;
+
+    public GameObject lootPrefab;
+    public LootTableSO lootTable;
+    [Range(0f, 1f)] public float dropChance = 0.25f;
 }
