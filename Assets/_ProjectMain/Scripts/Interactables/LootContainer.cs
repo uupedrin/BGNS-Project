@@ -5,6 +5,7 @@ using System.Threading;
 
 public class LootContainer : MonoBehaviour, IInteractable
 {
+    [SerializeField] private string containerId;
     [SerializeField] private LootTableSO lootTable;
     [SerializeField] private GameObject lootPrefab;
     [SerializeField] private GameObject outlineSprite;
@@ -38,6 +39,11 @@ public class LootContainer : MonoBehaviour, IInteractable
 
         disappearCts?.Cancel();
         disappearCts = new CancellationTokenSource();
+
+        if(!string.IsNullOrEmpty(containerId) && SaveManager.pendingLoad && SaveData.current.worldData.collectedContainerIds.Contains(containerId))
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     public void Interact(GameObject interactor)
@@ -45,7 +51,12 @@ public class LootContainer : MonoBehaviour, IInteractable
         if (hasBeenLooted) return;
         hasBeenLooted = true;
 
-        transform.DOShakePosition(shakeDuration, shakeStrength);
+        if (!string.IsNullOrEmpty(containerId) && !SaveData.current.worldData.collectedContainerIds.Contains(containerId))
+        {
+            SaveData.current.worldData.collectedContainerIds.Add(containerId);
+        }
+
+            transform.DOShakePosition(shakeDuration, shakeStrength);
         col.enabled = false;
         DropLoot();
         DisappearAfterDelay(disappearCts.Token).Forget();

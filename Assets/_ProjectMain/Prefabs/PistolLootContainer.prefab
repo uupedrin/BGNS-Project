@@ -197,6 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3d35bd42dbf74846a59841f8987937a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LootContainer
+  containerId: pistol_container
   lootTable: {fileID: 11400000, guid: 4a50c3cb7c6594e40993b00bbbab45f5, type: 2}
   lootPrefab: {fileID: 8540150320183897236, guid: 7cc83faf49416814d98c10e5df6c61b7, type: 3}
   outlineSprite: {fileID: 614262189811493440}
