@@ -10,7 +10,7 @@ public class MainMenuController : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button newGameButton;
     [SerializeField] private Button loadGameButton;
-    [SerializeField] private Button optionsButton;
+    [SerializeField] private Button creditsButton;
     [SerializeField] private Button quitButton;
 
     [Header("UI Components")]
@@ -18,6 +18,7 @@ public class MainMenuController : MonoBehaviour
     [SerializeField]private Image skyLayer;
     [SerializeField] private Image gameLogo;
     [SerializeField] private TMP_Text savedDayText;
+    [SerializeField] private CreditsUI creditsUi;
 
     [Header("Animation")]
     [SerializeField] private float skyLoopAnimationDuration = 10f;
@@ -30,7 +31,7 @@ public class MainMenuController : MonoBehaviour
     {
         newGameButton?.onClick.AddListener(OnNewGameClick);
         loadGameButton?.onClick.AddListener(OnLoadGameClick);
-        optionsButton?.onClick.AddListener(OnOptionsClick);
+        creditsButton?.onClick.AddListener(OnOptionsClick);
         quitButton?.onClick.AddListener(OnQuitGameClick);
     }
 
@@ -38,7 +39,7 @@ public class MainMenuController : MonoBehaviour
     {
         newGameButton?.onClick.RemoveListener(OnNewGameClick);
         loadGameButton?.onClick.RemoveListener(OnLoadGameClick);
-        optionsButton?.onClick.RemoveListener(OnOptionsClick);
+        creditsButton?.onClick.RemoveListener(OnOptionsClick);
         quitButton?.onClick.RemoveListener(OnQuitGameClick);
     }
 
@@ -103,7 +104,7 @@ public class MainMenuController : MonoBehaviour
 
     private void OnOptionsClick()
     {
-
+        creditsUi.OpenCredits();
     }
 
     private void OnQuitGameClick()
