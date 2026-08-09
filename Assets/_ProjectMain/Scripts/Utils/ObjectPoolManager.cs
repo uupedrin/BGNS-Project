@@ -112,6 +112,8 @@ public class ObjectPoolManager : MonoSingleton<ObjectPoolManager>
             return;
         }
 
+        if (!obj.activeSelf) return;
+
         obj.SetActive(false);
         obj.transform.SetParent(_poolRoot.transform);
         pool.Inactive.Add(obj);

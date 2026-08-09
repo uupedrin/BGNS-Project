@@ -1,3 +1,5 @@
+using Cysharp.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -12,6 +14,10 @@ public class Projectile : MonoBehaviour
 
     private int damage;
 
+    private Vector2 direction;
+
+    private CancellationTokenSource lifetimeCts;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -19,13 +25,22 @@ public class Projectile : MonoBehaviour
 
     public void Setup(Vector2 direction, int damage)
     {
-        direction = direction.normalized;
+        this.direction = direction.normalized;
         this.damage = damage;
 
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(this.direction.y, this.direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle);
-        rb.linearVelocity = direction * speed;
-        ObjectPoolManager.Return(gameObject, lifetime);
+        rb.linearVelocity = this.direction * speed;
+
+        lifetimeCts?.Cancel();
+        lifetimeCts = new CancellationTokenSource();
+        ExpireAfterLifetime(lifetimeCts.Token).Forget();
+    }
+
+    private async UniTask ExpireAfterLifetime(CancellationToken token)
+    {
+        await UniTask.WaitForSeconds(lifetime, cancellationToken: token);
+        ObjectPoolManager.Return(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -35,7 +50,8 @@ public class Projectile : MonoBehaviour
         IDamageable damageable = other.GetComponent<IDamageable>();
         if (damageable != null)
         {
-            damageable.TakeDamage(damage);
+            damageable.TakeDamage(damage, direction);
+            lifetimeCts?.Cancel();
             ObjectPoolManager.Return(gameObject);
         }
     }

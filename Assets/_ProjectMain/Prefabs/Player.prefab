@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7902829497926478285}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: FirePointHorizontal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 1916138539731208445}
   - component: {fileID: 9203699242671558853}
   - component: {fileID: 3713778045088555060}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PlayerSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 7910349862775532897}
   - component: {fileID: 2650421219674765724}
   - component: {fileID: 6713492514045594142}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Weapon Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -283,7 +283,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2676825930952381638}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: FirePointVertical
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -323,7 +323,7 @@ GameObject:
   - component: {fileID: 1169393897454542033}
   - component: {fileID: 3709486053492480755}
   - component: {fileID: 7433598454238329857}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
