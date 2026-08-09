@@ -807,7 +807,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuController
   newGameButton: {fileID: 1944050289}
   loadGameButton: {fileID: 1753387313}
-  creditsButton: {fileID: 0}
+  creditsButton: {fileID: 773047552}
   quitButton: {fileID: 501493492}
   buttonsContainer: {fileID: 360931268}
   skyLayer: {fileID: 332011235}
@@ -1201,7 +1201,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 33.4, y: 18}
+  m_AnchoredPosition: {x: 33.399902, y: 18}
   m_SizeDelta: {x: 785, y: 457}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &880828912
