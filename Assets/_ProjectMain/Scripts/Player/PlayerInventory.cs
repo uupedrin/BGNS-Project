@@ -67,14 +67,8 @@ public class PlayerInventory : MonoBehaviour
 
     private void OnUseSelectedItemKeyPress(InputAction.CallbackContext context)
     {
-        if(currentHeldItem != null)
-        {
-            Debug.Log("Usando item");
-        }
-        else
-        {
-            Debug.Log("Não tem item pra usar");
-        }
+        if (currentHeldItem == null) return;
+        InventoryManager.Instance.UseItem(currentHeldItem.itemData);
     }
 
     private void HandleInventoryItemScroll()

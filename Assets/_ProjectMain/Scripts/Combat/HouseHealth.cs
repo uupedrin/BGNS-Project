@@ -1,9 +1,15 @@
 using DG.Tweening;
+using System;
 using UnityEngine;
 
 public class HouseHealth : MonoSingleton<HouseHealth>, IDamageable
 {
+    public Action<float> OnHealthChanged;
+    public Action OnDefeat;
+    private bool isDefeated = false;
+
     [SerializeField] private int maxHealth = 100;
+    public int MaxHealth => maxHealth;
     public int CurrentHealth { get; private set; }
     public float CurrentHealthNormalided => (float)CurrentHealth / maxHealth;
 
@@ -14,18 +20,28 @@ public class HouseHealth : MonoSingleton<HouseHealth>, IDamageable
 
     protected override void AwakeBehaviour()
     {
-        CurrentHealth = maxHealth;
+        CurrentHealth = SaveManager.pendingLoad ? SaveData.current.houseData.currentHealth : maxHealth;
     }
 
     public void TakeDamage(int amount, Vector2 _)
     {
-        CurrentHealth = Mathf.Max(0, CurrentHealth - amount); //Defeat Condition
+        if (isDefeated) return;
+
+        CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
         transform.DOShakePosition(shakeDuration, shakeStrength);
+        OnHealthChanged?.Invoke(CurrentHealthNormalided);
+
+        if(CurrentHealth <= 0)
+        {
+            isDefeated = true;
+            OnDefeat?.Invoke();
+        }
     }
 
     public void Heal(int amount)
     {
         CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
+        OnHealthChanged?.Invoke(CurrentHealthNormalided);
     }
 
     public Transform GetNearestAttackPoint(Vector2 initialPosition)

@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5a042c1f940beb4bbf64af3ad69abed, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c26e41788426634e827d36403da0582, type: 3}
   m_Name: RepairWood
-  m_EditorClassIdentifier: Assembly-CSharp::ItemSO
+  m_EditorClassIdentifier: Assembly-CSharp::ConsumableSO
   itemId: repair_wood
   itemName: Wood
   itemDescription: I can use this to repair my house! (Only if I'm bad at killing
@@ -20,3 +20,4 @@ MonoBehaviour:
   itemType: 3
   stackable: 1
   itemsOnStackAmount: 2
+  healAmount: 10

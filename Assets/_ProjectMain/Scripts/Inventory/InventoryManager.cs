@@ -77,6 +77,16 @@ public class InventoryManager : MonoSingleton<InventoryManager>
         return consumed;
     }
 
+    public void UseItem(ItemSO item)
+    {
+        ConsumableSO consumable = item as ConsumableSO;
+        if (consumable == null) return;
+
+        if (HouseHealth.Instance.CurrentHealth >= HouseHealth.Instance.MaxHealth) return;
+        HouseHealth.Instance.Heal(consumable.healAmount);
+        ConsumeItem(item, 1);
+    }
+
     public ItemInstance GetSelectedInstance()
     {
         InventorySlot slot = inventorySlots[selectedSlotId];

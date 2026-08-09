@@ -14,6 +14,8 @@ public class SaveManager : MonoBehaviour
             SaveData.current.inventoryData = InventoryManager.Instance.CaptureState();
         if (DayNightManager.Instance != null)
             SaveData.current.dayData.currentDay = DayNightManager.Instance.CurrentDay;
+        if (HouseHealth.Instance != null)
+            SaveData.current.houseData.currentHealth = HouseHealth.Instance.CurrentHealth;
 
         SerializationManager.Save(SAVE_NAME, SaveData.current);
     }

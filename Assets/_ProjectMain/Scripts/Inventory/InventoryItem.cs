@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Image))]
 public class InventoryItem : MonoBehaviour,
     IBeginDragHandler, IDragHandler, IEndDragHandler,
-    IPointerEnterHandler, IPointerExitHandler
+    IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public ItemInstance instance { get; private set; }
     public ItemSO item => instance.itemData;
@@ -96,5 +96,13 @@ public class InventoryItem : MonoBehaviour,
     public void OnPointerExit(PointerEventData eventData)
     {
         InventoryManager.Instance.ClearItemDetails();
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (!InventoryManager.Instance.isInventoryOpen) return;
+        if (eventData.button != PointerEventData.InputButton.Right) return;
+
+        InventoryManager.Instance.UseItem(item);
     }
 }

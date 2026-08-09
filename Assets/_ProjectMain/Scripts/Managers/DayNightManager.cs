@@ -14,6 +14,10 @@ public class DayNightManager : MonoSingleton<DayNightManager>
     [SerializeField] private Color nightColor = Color.white;
     [SerializeField] private float lightTransitionDuration = 3f;
 
+    [SerializeField] private int nightsToSurvive = 3;
+    public Action OnVictory;
+    private bool hasWon = false;
+
     public Action<int> OnDayStart;
     public Action<int> OnNightStart;
 
@@ -34,11 +38,22 @@ public class DayNightManager : MonoSingleton<DayNightManager>
 
     private void Update()
     {
+        if (hasWon) return;
+
         PhaseTimeRemaining -= Time.deltaTime;
         if (PhaseTimeRemaining > 0f) return;
 
         if (CurrentPhase == DayPhase.Day) StartNight();
-        else StartDay();
+        else
+        {
+            if(CurrentDay >= nightsToSurvive)
+            {
+                hasWon = true;
+                OnVictory?.Invoke();
+                return;
+            }
+            StartDay();
+        }
     }
 
     private void StartDay()
@@ -66,6 +81,5 @@ public class DayNightManager : MonoSingleton<DayNightManager>
         }
 
         OnNightStart?.Invoke(CurrentDay);
-        SaveManager.SaveGame();
     }
 }
