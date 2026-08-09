@@ -12,9 +12,14 @@ public class InventoryManager : MonoSingleton<InventoryManager>
 
     [SerializeField] private GameObject inventoryContainer;
 
+
     [SerializeField] private ItemDetailPanel itemDetailPanel;
     public void ShowItemDetails(ItemSO item) => itemDetailPanel.Show(item);
     public void ClearItemDetails() => itemDetailPanel.Clear();
+
+    [SerializeField] private AmmoUI ammoUI;
+    public void UpdateAmmoUI(int currentClip) => ammoUI.SetAmmo(currentClip);
+    public void SetAmmoUIVisible(bool visible) => ammoUI.SetVisible(visible);
 
     public bool isInventoryOpen { get; private set; } = false;
 

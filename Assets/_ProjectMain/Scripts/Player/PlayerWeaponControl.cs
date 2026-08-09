@@ -4,9 +4,11 @@ using Cysharp.Threading.Tasks;
 using System.Threading;
 
 [RequireComponent(typeof(PlayerEvents))]
+[RequireComponent(typeof(PlayerWeaponAim))]
 public class PlayerWeaponControl : MonoBehaviour
 {
     private PlayerEvents playerEvents;
+    private PlayerWeaponAim weaponAim;
 
     [SerializeField] private InputActionReference attackAction;
     [SerializeField] private InputActionReference reloadAction;
@@ -23,12 +25,12 @@ public class PlayerWeaponControl : MonoBehaviour
     private void Awake()
     {
         playerEvents = GetComponent<PlayerEvents>();
+        weaponAim = GetComponent<PlayerWeaponAim>();
     }
 
     private void OnEnable()
     {
         attackAction.action?.Enable();
-        attackAction.action.performed += OnAttackPressed;
 
         reloadAction.action?.Enable();
         reloadAction.action.performed += OnReloadPressed;
@@ -42,7 +44,6 @@ public class PlayerWeaponControl : MonoBehaviour
     private void OnDisable()
     {
         attackAction.action?.Disable();
-        attackAction.action.performed -= OnAttackPressed;
 
         reloadAction.action?.Disable();
         reloadAction.action.performed -= OnReloadPressed;
@@ -64,9 +65,17 @@ public class PlayerWeaponControl : MonoBehaviour
 
         weaponInstance = hasWeapon ? instance : null;
         weaponData = hasWeapon ? instance.itemData as WeaponSO : null;
+
+        InventoryManager.Instance.SetAmmoUIVisible(hasWeapon);
+        if (hasWeapon) NotifyAmmoChanged();
     }
 
-    private void OnAttackPressed(InputAction.CallbackContext context)
+    private void NotifyAmmoChanged()
+    {
+        InventoryManager.Instance.UpdateAmmoUI(weaponInstance.currentAmmoInClip);
+    }
+
+    private void OnAttackHeld()
     {
         if (InventoryManager.Instance.isInventoryOpen || weaponInstance == null || isReloading || Time.time < nextFireTime) return;
         if (weaponInstance.currentAmmoInClip <= 0) return; //click sound
@@ -75,8 +84,8 @@ public class PlayerWeaponControl : MonoBehaviour
         nextFireTime = Time.time + weaponData.fireRate;
         weaponAnim.SetTrigger("Shoot");
         EndShootAnim(weaponData.fireRate).Forget();
-        //Spawn projectile
         SpawnProjectile();
+        NotifyAmmoChanged();
     }
 
     private async UniTask EndShootAnim(float delay)
@@ -106,6 +115,7 @@ public class PlayerWeaponControl : MonoBehaviour
 
         int taken = InventoryManager.Instance.ConsumeItem(weaponData.ammoType, pendingReloadAmount);
         weaponInstance.currentAmmoInClip += taken;
+        NotifyAmmoChanged();
     }
 
     private void HandleReloadComplete()
